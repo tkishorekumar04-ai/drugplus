@@ -1,0 +1,377 @@
+// DrugPlus — pharmaceutical / PCD franchise website
+// PostgreSQL schema (works with Supabase, Neon, RDS or any Postgres 14+)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Auth ──────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  EDITOR
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         UserRole  @default(EDITOR)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("users")
+}
+
+// ─── Catalogue ─────────────────────────────────────────────────────────────
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CategoryKind {
+  DOSAGE_FORM // Tablets, Capsules, Syrups …
+  RANGE // Pediatric, Gynecology, Cardiac & Diabetic …
+}
+
+model Category {
+  id          String            @id @default(cuid())
+  name        String
+  slug        String            @unique
+  kind        CategoryKind      @default(RANGE)
+  description String?
+  icon        String? // key into the icon registry (see src/components/shared/icon.tsx)
+  imageUrl    String?
+  sortOrder   Int               @default(0)
+  isPublished Boolean           @default(true)
+  products    ProductCategory[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@index([kind, isPublished, sortOrder])
+  @@map("categories")
+}
+
+model TherapeuticArea {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  description     String?
+  content         String? // markdown, company-approved copy only
+  icon            String?
+  imageUrl        String?
+  sortOrder       Int       @default(0)
+  isPublished     Boolean   @default(true)
+  seoTitle        String?
+  seoDescription  String?
+  products        Product[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([isPublished, sortOrder])
+  @@map("therapeutic_areas")
+}
+
+model Product {
+  id                String            @id @default(cuid())
+  name              String
+  slug              String            @unique
+  brand             String?
+  composition       String
+  productType       String? // e.g. Prescription (Rx), OTC, Nutraceutical
+  packSize          String?
+  strengths         String? // comma separated, e.g. "250 mg, 500 mg"
+  description       String? // markdown
+  keyInformation    String? // markdown – company approved
+  indications       String? // company-approved text ONLY; left empty if not supplied
+  specifications    Json? // [{ label, value }]
+  imageUrl          String?
+  pdfUrl            String?
+  isFeatured        Boolean           @default(false)
+  status            PublishStatus     @default(PUBLISHED)
+  sortOrder         Int               @default(0)
+  seoTitle          String?
+  seoDescription    String?
+  therapeuticAreaId String?
+  therapeuticArea   TherapeuticArea?  @relation(fields: [therapeuticAreaId], references: [id], onDelete: SetNull)
+  categories        ProductCategory[]
+  leads             Lead[]
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([status, isFeatured])
+  @@index([therapeuticAreaId])
+  @@index([name])
+  @@index([brand])
+  @@map("products")
+}
+
+model ProductCategory {
+  productId  String
+  categoryId String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([productId, categoryId])
+  @@index([categoryId])
+  @@map("product_categories")
+}
+
+// ─── Content ───────────────────────────────────────────────────────────────
+
+model BlogCategory {
+  id        String     @id @default(cuid())
+  name      String
+  slug      String     @unique
+  sortOrder Int        @default(0)
+  posts     BlogPost[]
+
+  @@map("blog_categories")
+}
+
+model BlogPost {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String        @unique
+  excerpt        String
+  content        String // markdown
+  coverImageUrl  String?
+  author         String?
+  status         PublishStatus @default(DRAFT)
+  publishedAt    DateTime?
+  faq            Json? // [{ q, a }] → FAQPage schema
+  seoTitle       String?
+  seoDescription String?
+  categoryId     String?
+  category       BlogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@map("blog_posts")
+}
+
+model Testimonial {
+  id               String   @id @default(cuid())
+  quote            String
+  name             String
+  role             String?
+  city             String?
+  company          String?
+  // Must be ticked by an admin: testimonial is genuine and published with the author's consent.
+  consentConfirmed Boolean  @default(false)
+  isPublished      Boolean  @default(false)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("testimonials")
+}
+
+enum DocumentType {
+  CERTIFICATE
+  LICENSE
+  COMPANY_DOCUMENT
+  MANUFACTURING
+  AWARD
+  QUALITY
+}
+
+model Certificate {
+  id           String       @id @default(cuid())
+  title        String
+  type         DocumentType @default(CERTIFICATE)
+  issuer       String?
+  number       String?
+  validUntil   DateTime?
+  description  String?
+  fileUrl      String? // PDF
+  thumbnailUrl String?
+  // Certificates are shown publicly only when verified AND published.
+  isVerified   Boolean      @default(false)
+  isPublished  Boolean      @default(false)
+  sortOrder    Int          @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([isPublished, isVerified, sortOrder])
+  @@map("certificates")
+}
+
+// Verified company statistics (only published values are rendered)
+model Stat {
+  id          String   @id @default(cuid())
+  label       String
+  value       Int
+  suffix      String?  @default("+")
+  isPublished Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  updatedAt   DateTime @updatedAt
+
+  @@map("stats")
+}
+
+enum LocationType {
+  STATE
+  CITY
+}
+
+// Localised SEO landing pages: /pharma-franchise-{slug}
+model Location {
+  id             String       @id @default(cuid())
+  name           String
+  slug           String       @unique
+  type           LocationType @default(STATE)
+  stateName      String?
+  headline       String?
+  intro          String
+  content        String // markdown — must be genuinely local information
+  coverage       String? // districts / cities covered
+  faq            Json?
+  isPublished    Boolean      @default(false)
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@map("locations")
+}
+
+enum MarketStatus {
+  SERVED
+  PROSPECTIVE
+}
+
+model ExportMarket {
+  id          String       @id @default(cuid())
+  name        String
+  region      String?
+  status      MarketStatus @default(PROSPECTIVE)
+  latitude    Float
+  longitude   Float
+  isPublished Boolean      @default(true)
+  sortOrder   Int          @default(0)
+
+  @@map("export_markets")
+}
+
+model GalleryImage {
+  id          String   @id @default(cuid())
+  title       String
+  caption     String?
+  imageUrl    String
+  section     String   @default("facility") // facility | quality | warehouse …
+  sortOrder   Int      @default(0)
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@map("gallery_images")
+}
+
+// ─── Leads ─────────────────────────────────────────────────────────────────
+
+enum LeadType {
+  FRANCHISE
+  MONOPOLY
+  DISTRIBUTOR
+  MANUFACTURING
+  EXPORT
+  PRODUCT
+  CONTACT
+  OTHER
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  FOLLOW_UP
+  CONVERTED
+  LOST
+}
+
+model Lead {
+  id                 String             @id @default(cuid())
+  type               LeadType           @default(OTHER)
+  status             LeadStatus         @default(NEW)
+  name               String
+  phone              String
+  email              String?
+  city               String?
+  state              String?
+  businessType       String?
+  interestedIn       String?
+  interestedCategory String?
+  message            String?
+  source             String // which form, e.g. "hero-form", "franchise-page"
+  utmSource          String?
+  utmMedium          String?
+  utmCampaign        String?
+  utmTerm            String?
+  utmContent         String?
+  gclid              String?
+  landingPage        String?
+  pageUrl            String?
+  referrer           String?
+  ipHash             String?
+  userAgent          String?
+  notes              String?
+  crmSyncedAt        DateTime?
+  crmSyncError       String?
+  productId          String?
+  product            Product?           @relation(fields: [productId], references: [id], onDelete: SetNull)
+  franchiseEnquiry   FranchiseEnquiry?
+  contactEnquiry     ContactEnquiry?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([status, createdAt])
+  @@index([type, createdAt])
+  @@index([createdAt])
+  @@index([phone])
+  @@index([ipHash, createdAt])
+  @@map("leads")
+}
+
+model FranchiseEnquiry {
+  id                 String  @id @default(cuid())
+  leadId             String  @unique
+  lead               Lead    @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  preferredTerritory String?
+  businessExperience String?
+  investmentRange    String?
+  productSegment     String?
+
+  @@map("franchise_enquiries")
+}
+
+model ContactEnquiry {
+  id          String @id @default(cuid())
+  leadId      String @unique
+  lead        Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  enquiryType String
+  message     String
+
+  @@map("contact_enquiries")
+}
+
+// ─── Settings (key → JSON) ────────────────────────────────────────────────
+
+model Setting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
