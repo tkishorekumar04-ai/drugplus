@@ -1,5 +1,6 @@
 "use client";
 
+import { preservingSubmit } from "@/components/admin/use-preserving-action";
 import { useActionState } from "react";
 import { Loader2 } from "lucide-react";
 import { loginAction } from "@/lib/admin/actions";
@@ -9,7 +10,7 @@ import { Button } from "@/components/ui/button";
 export function LoginForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(loginAction, undefined);
   return (
-    <form action={action} className="mt-6 space-y-4">
+    <form onSubmit={preservingSubmit(action)} className="mt-6 space-y-4">
       <input type="hidden" name="next" value={next ?? "/admin"} />
       <div>
         <Label htmlFor="email">Email</Label>

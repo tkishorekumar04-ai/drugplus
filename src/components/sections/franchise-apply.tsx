@@ -55,7 +55,7 @@ export function FranchiseApply({
               <TrackedLink href={telLink(phone)} event="call_click" params={{ location: source }} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-navy-900 font-semibold text-white hover:bg-navy-800">
                 <Phone className="h-4 w-4" aria-hidden /> {phone}
               </TrackedLink>
-              <TrackedLink href={whatsappLink(whatsapp, message)} target="_blank" rel="noopener noreferrer" event="whatsapp_click" params={{ location: source }} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#1A9E52] font-semibold text-white hover:bg-[#158544]">
+              <TrackedLink href={whatsappLink(whatsapp, message)} target="_blank" rel="noopener noreferrer" event="whatsapp_click" params={{ location: source }} className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-[#147A3E] font-semibold text-white hover:bg-[#10632F]">
                 <WhatsAppIcon className="h-4 w-4" /> WhatsApp
               </TrackedLink>
             </div>

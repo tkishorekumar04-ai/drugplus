@@ -58,7 +58,7 @@ export function ProductsShowcase({ categories, products, catalogueUrl }: { categ
         {products.length > 0 && (
           <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {products.map((p, i) => (
-              <Reveal as="li" key={p.id} delay={i * 0.04}>
+              <Reveal as="li" key={p.id} delay={i * 0.04} className={i >= 4 ? "hidden sm:block" : undefined}>
                 <ProductCard product={p} />
               </Reveal>
             ))}

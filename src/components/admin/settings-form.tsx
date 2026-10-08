@@ -1,5 +1,6 @@
 "use client";
 
+import { preservingSubmit } from "@/components/admin/use-preserving-action";
 import { useActionState } from "react";
 import { Loader2 } from "lucide-react";
 import { saveSettings, type FormState } from "@/lib/admin/actions";
@@ -85,7 +86,7 @@ const cls = "w-full rounded-xl border border-line bg-white px-3 text-sm focus:ou
 export function SettingsForm({ settings }: { settings: SiteSettings }) {
   const [state, action, pending] = useActionState<FormState, FormData>(saveSettings, undefined);
   return (
-    <form action={action} className="space-y-6">
+    <form onSubmit={preservingSubmit(action)} className="space-y-6">
       {GROUPS.map((g) => (
         <fieldset key={g.title} className="rounded-2xl border border-line bg-white p-5 sm:p-6">
           <legend className="px-1 text-base font-bold text-navy-950">{g.title}</legend>

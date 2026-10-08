@@ -50,11 +50,11 @@ const config: Config = {
           800: "#18378A",
         },
         surface: "#F5F8FC",
-        ink: { DEFAULT: "#0E1B2E", muted: "#4B5B73", subtle: "#6B7A90" },
+        ink: { DEFAULT: "#0E1B2E", muted: "#4B5B73", subtle: "#5E6B80" },
         line: "#E3E9F2",
       },
       fontFamily: {
-        sans: ['"Manrope Variable"', "Manrope", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+        sans: ["var(--font-manrope)", "Manrope", "ui-sans-serif", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
       },
       fontSize: {
         "display-xl": ["clamp(2.4rem, 5.2vw, 4.25rem)", { lineHeight: "1.05", letterSpacing: "-0.035em", fontWeight: "750" }],

@@ -65,7 +65,7 @@ export default async function LeadDetail({ params }: { params: Promise<{ id: str
         actions={
           <>
             <a href={`tel:${l.phone}`} className="inline-flex h-10 items-center gap-2 rounded-full bg-navy-900 px-4 text-sm font-semibold text-white"><Phone className="h-4 w-4" aria-hidden /> Call</a>
-            <a href={whatsappLink(l.phone.length === 10 ? `91${l.phone}` : l.phone, `Hello ${l.name}, thank you for your enquiry.`)} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full bg-[#1A9E52] px-4 text-sm font-semibold text-white"><WhatsAppIcon className="h-4 w-4" /> WhatsApp</a>
+            <a href={whatsappLink(l.phone.length === 10 ? `91${l.phone}` : l.phone, `Hello ${l.name}, thank you for your enquiry.`)} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-2 rounded-full bg-[#147A3E] px-4 text-sm font-semibold text-white"><WhatsAppIcon className="h-4 w-4" /> WhatsApp</a>
             <LeadStatusSelect id={l.id} status={l.status} className="h-10 rounded-full" />
           </>
         }

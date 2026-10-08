@@ -142,7 +142,7 @@ export function ProductVisual({
           <path d="M150 108.6 L214 112 Q226 113 226 124 V136 Q226 147 214 148 L150 151.4Z" fill={p.a} />
           <text x="84" y="134" fontFamily="Manrope, sans-serif" fontWeight="800" fontSize="15" fill="#0D1E3F">{label.slice(0, 9)}</text>
           <text x="84" y="145" fontFamily="Manrope, sans-serif" fontWeight="600" fontSize="6.5" letterSpacing="1.2" fill="#4B5B73">{sub || "CREAM"}</text>
-          <path d="M70 104 L214 112 Q226 113 226 124 V136 Q226 147 214 148 L70 156 Q62 156 62 148 V112 Q62 104 70 104Z" fill={`url(#${id}sh)`} opacity=".6" transform="rotate(90 144 130) scale(1 1)" />
+          <path d="M70 104 L214 112 Q226 113 226 124 V136 Q226 147 214 148 L70 156 Q62 156 62 148 V112 Q62 104 70 104Z" fill={`url(#${id}sh)`} opacity=".35" />
         </g>
       )}
 

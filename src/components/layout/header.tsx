@@ -64,7 +64,7 @@ export function Header({ logo, phone, whatsapp, whatsappMessage }: Props) {
       )}
     >
       <div className={cn("container flex items-center justify-between gap-4 transition-[height] duration-300", scrolled ? "h-16" : "h-[4.75rem]")}>
-        <Link href="/" aria-label="Home" className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
+        <Link href="/" className="shrink-0 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500">
           {logo}
         </Link>
 
@@ -156,7 +156,7 @@ export function Header({ logo, phone, whatsapp, whatsappMessage }: Props) {
               <a href={telLink(phone)} className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-line font-semibold text-navy-900">
                 <Phone className="h-4 w-4" aria-hidden /> Call
               </a>
-              <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#1A9E52] font-semibold text-white">
+              <a href={wa} target="_blank" rel="noopener noreferrer" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#147A3E] font-semibold text-white">
                 <WhatsAppIcon className="h-4 w-4" /> WhatsApp
               </a>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { preservingSubmit } from "@/components/admin/use-preserving-action";
 import { useActionState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
@@ -39,7 +40,7 @@ export function ResourceForm({
   const err = (n: string) => state?.fieldErrors?.[n];
 
   return (
-    <form action={action} className="rounded-2xl border border-line bg-white p-5 sm:p-6">
+    <form onSubmit={preservingSubmit(action)} className="rounded-2xl border border-line bg-white p-5 sm:p-6">
       <div className="grid gap-5 md:grid-cols-2">
         {fields.map((f) => {
           const v = toInput(f, values[f.name]);

@@ -14,7 +14,7 @@ export const buttonVariants = cva(
         outline: "border border-line bg-white text-navy-900 hover:border-navy-300 hover:bg-navy-50",
         ghostLight: "border border-white/25 bg-white/5 text-white backdrop-blur hover:bg-white/15",
         white: "bg-white text-navy-900 hover:bg-navy-50",
-        whatsapp: "bg-[#1A9E52] text-white hover:bg-[#158544]",
+        whatsapp: "bg-[#147A3E] text-white hover:bg-[#10632F]",
         link: "rounded-none px-0 text-brand-600 underline-offset-4 hover:underline",
         ghost: "text-navy-800 hover:bg-navy-50",
       },

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft, Search } from "lucide-react";
-import "@fontsource-variable/manrope";
 
 export default function NotFound() {
   return (

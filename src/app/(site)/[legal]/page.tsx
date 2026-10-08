@@ -6,7 +6,6 @@ import { getSettings } from "@/lib/settings";
 import { PageHero } from "@/components/shared/page-hero";
 import { Markdown } from "@/components/shared/markdown";
 
-export const dynamicParams = false;
 export const revalidate = 3600;
 export function generateStaticParams() {
   return Object.keys(LEGAL).map((legal) => ({ legal }));

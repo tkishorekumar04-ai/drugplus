@@ -32,7 +32,7 @@ export const metaSchema = z.object({
   pageUrl: optionalText(500),
   referrer: optionalText(500),
   // anti-spam
-  company_website: z.string().max(0, "Spam detected").optional(), // honeypot – must be empty
+  company_website: z.string().max(500).optional(), // honeypot – real users leave it empty; checked in the API route
   startedAt: z.coerce.number().optional(),
   turnstileToken: z.string().max(4096).optional(),
 });

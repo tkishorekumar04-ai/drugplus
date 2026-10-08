@@ -26,9 +26,9 @@ export function FloatingActions({ phone, whatsapp, message }: { phone: string; w
           event="whatsapp_click"
           params={{ location: "floating" }}
           aria-label="Chat with us on WhatsApp"
-          className="group relative grid h-14 w-14 place-items-center rounded-full bg-[#1A9E52] text-white shadow-lift transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/40"
+          className="group relative grid h-14 w-14 place-items-center rounded-full bg-[#147A3E] text-white shadow-lift transition hover:scale-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-emerald-500/40"
         >
-          <span className="absolute inset-0 animate-ping rounded-full bg-[#1A9E52] opacity-20 motion-reduce:hidden" aria-hidden />
+          <span className="absolute inset-0 animate-ping rounded-full bg-[#147A3E] opacity-20 motion-reduce:hidden" aria-hidden />
           <WhatsAppIcon className="relative h-7 w-7" />
         </TrackedLink>
       </div>

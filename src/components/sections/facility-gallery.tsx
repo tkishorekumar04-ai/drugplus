@@ -74,7 +74,6 @@ export function FacilityGallery({ images }: { images: Img[] }) {
               type="button"
               onClick={() => show(i)}
               className="group relative block h-full w-full overflow-hidden rounded-2xl text-left focus-visible:ring-4 focus-visible:ring-brand-500/40"
-              aria-label={`Open image: ${img.title}`}
             >
               <ParallaxTile>
                 <Media img={img} sizes="(min-width:768px) 50vw, 100vw" />
@@ -82,7 +81,7 @@ export function FacilityGallery({ images }: { images: Img[] }) {
               <span className="absolute inset-0 bg-gradient-to-t from-navy-950/80 via-navy-950/10 to-transparent" aria-hidden />
               <span className="absolute bottom-0 left-0 right-0 flex items-end justify-between p-4 text-white">
                 <span>
-                  <span className="block font-bold">{img.title}</span>
+                  <span className="block font-bold"><span className="sr-only">Open image: </span>{img.title}</span>
                   {img.caption && <span className="mt-0.5 line-clamp-1 block text-sm text-navy-100">{img.caption}</span>}
                 </span>
                 <ZoomIn className="h-5 w-5 opacity-0 transition group-hover:opacity-100" aria-hidden />

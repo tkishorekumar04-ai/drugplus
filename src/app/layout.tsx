@@ -1,8 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import "@fontsource-variable/manrope";
+import localFont from "next/font/local";
 import "./globals.css";
 import { getSettings } from "@/lib/settings";
 import { SITE_URL } from "@/lib/utils";
+
+const manrope = localFont({
+  src: [{ path: "./fonts/manrope-latin-wght-normal.woff2", weight: "200 800", style: "normal" }],
+  variable: "--font-manrope",
+  display: "swap",
+  fallback: ["system-ui", "Segoe UI", "Roboto", "Arial", "sans-serif"],
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const s = await getSettings();
@@ -24,7 +31,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-IN">
+    <html lang="en-IN" className={manrope.variable}>
       <body>{children}</body>
     </html>
   );

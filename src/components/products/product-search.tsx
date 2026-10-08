@@ -147,6 +147,7 @@ export function ProductSearch({
         )}
       </div>
 
+      <h2 className="sr-only">Search results</h2>
       <div className={`mt-6 transition-opacity ${loading ? "opacity-60" : ""}`}>
         {result.items.length ? (
           <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
