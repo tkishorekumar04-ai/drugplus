@@ -11,13 +11,21 @@ const slugify = (s: string) =>
 async function main() {
   // ── Admin user ──────────────────────────────────────────────────────────
   const email = (process.env.SEED_ADMIN_EMAIL || "admin@example.com").toLowerCase();
-  const password = process.env.SEED_ADMIN_PASSWORD || "ChangeMe!2026";
-  await prisma.user.upsert({
-    where: { email },
-    update: {},
-    create: { email, name: "Administrator", role: "ADMIN", passwordHash: await bcrypt.hash(password, 12) },
-  });
-  console.log(`✓ admin user: ${email}`);
+  const isProd = process.env.NODE_ENV === "production" || Boolean(process.env.VERCEL);
+  const password = process.env.SEED_ADMIN_PASSWORD || (isProd ? "" : "ChangeMe!2026");
+  if (!password) {
+    // Never create a production admin with a well-known default password.
+    console.warn("! SEED_ADMIN_PASSWORD not set – skipping admin user creation (set it and redeploy).");
+  } else if (password.length < 10) {
+    console.warn("! SEED_ADMIN_PASSWORD must be at least 10 characters – skipping admin user creation.");
+  } else {
+    await prisma.user.upsert({
+      where: { email },
+      update: {},
+      create: { email, name: "Administrator", role: "ADMIN", passwordHash: await bcrypt.hash(password, 12) },
+    });
+    console.log(`✓ admin user: ${email}`);
+  }
 
   // ── Settings (only created if missing – never overwrites admin edits) ──
   await prisma.setting.upsert({ where: { key: "site" }, update: {}, create: { key: "site", value: {} } });

@@ -92,12 +92,11 @@ The **public phone and WhatsApp numbers**, the default WhatsApp message, address
 
 ### Vercel + Supabase (recommended)
 
-1. Create a Supabase project. Copy the **pooled** connection string (port 6543, add `?pgbouncer=true`) into `DATABASE_URL` and the **direct** one into `DIRECT_URL`.
-2. Import the repo into Vercel and add the environment variables above. Set `NEXT_PUBLIC_SITE_URL` to your production domain.
-3. The build command is `npm run build`, which runs `prisma generate`. Apply migrations once from your machine or CI:
-   ```bash
-   DATABASE_URL=... DIRECT_URL=... npx prisma migrate deploy && npm run db:seed
-   ```
+1. In Supabase, open **Connect** (top bar) → **ORMs → Prisma** and copy both connection strings, using your **database password** (not the API keys):
+   - `DATABASE_URL` = transaction pooler, port **6543**, ending in `?pgbouncer=true&connection_limit=1`
+   - `DIRECT_URL` = session pooler, port **5432** (used for migrations)
+2. In Vercel → Project → Settings → Environment Variables, add at least `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` (10+ chars) and `IP_HASH_SALT`. `NEXT_PUBLIC_SITE_URL` falls back to the Vercel production URL until you set your own domain.
+3. Deploy. Vercel runs the `vercel-build` script (`scripts/vercel-build.mjs`), which checks the required variables, applies migrations, runs the idempotent seed and builds. If a variable is missing, the build stops with a message naming it. Set `SKIP_SEED=1` to skip seeding.
 4. **Uploads on Vercel:** the serverless filesystem is ephemeral. Upload images and PDFs to Supabase Storage, S3 or Cloudinary and paste the `https://` URL into the admin field (the field accepts URLs). Add your storage host to `images.remotePatterns` in `next.config.ts` if it is not already listed.
 5. Add your domain and enable Vercel Analytics or Speed Insights if wanted.
 
