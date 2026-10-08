@@ -96,7 +96,7 @@ The **public phone and WhatsApp numbers**, the default WhatsApp message, address
    - `DATABASE_URL` = transaction pooler, port **6543**, ending in `?pgbouncer=true&connection_limit=1`
    - `DIRECT_URL` = session pooler, port **5432** (used for migrations)
 2. In Vercel → Project → Settings → Environment Variables, add at least `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`, `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` (10+ chars) and `IP_HASH_SALT`. `NEXT_PUBLIC_SITE_URL` falls back to the Vercel production URL until you set your own domain.
-3. Deploy. Vercel runs the `vercel-build` script (`scripts/vercel-build.mjs`), which checks the required variables, applies migrations, runs the idempotent seed and builds. If a variable is missing, the build stops with a message naming it. Set `SKIP_SEED=1` to skip seeding.
+3. Deploy. `npm run build` (`scripts/build.mjs`) checks the required variables, on Vercel/CI applies migrations and runs the idempotent seed, then builds. If you set only `DATABASE_URL` (pooler port 6543), the migration URL is derived automatically. If a variable is missing, the build stops with a message naming it. Set `SKIP_SEED=1` to skip seeding.
 4. **Uploads on Vercel:** the serverless filesystem is ephemeral. Upload images and PDFs to Supabase Storage, S3 or Cloudinary and paste the `https://` URL into the admin field (the field accepts URLs). Add your storage host to `images.remotePatterns` in `next.config.ts` if it is not already listed.
 5. Add your domain and enable Vercel Analytics or Speed Insights if wanted.
 
